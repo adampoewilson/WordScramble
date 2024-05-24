@@ -30,8 +30,18 @@ struct ContentView: View {
                     
                 }
                 
+                Section {
+                    
+                    ForEach(usedWords, id: \.self) { word in
+                        
+                        Text(word)
+                        
+                    }
+                    
+                }
+                
             }
-            
+            .navigationTitle(rootWord)
         }
     }
 }
