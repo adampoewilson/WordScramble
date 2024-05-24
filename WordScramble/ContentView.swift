@@ -27,14 +27,21 @@ struct ContentView: View {
                 Section {
                     
                     TextField("Enter your word:", text: $newWord)
+                        .textInputAutocapitalization(.never)
                     
                 }
                 
-                Section {
+              Section {
                     
                     ForEach(usedWords, id: \.self) { word in
                         
-                        Text(word)
+                        HStack {
+                            
+                            Image(systemName: "\(word.count).circle")
+                            
+                            Text(word)
+                            
+                        }
                         
                     }
                     
@@ -42,7 +49,28 @@ struct ContentView: View {
                 
             }
             .navigationTitle(rootWord)
+            .onSubmit(addNewWord)
         }
+        
+    }
+    
+    func addNewWord() {
+        
+        // set the word lowercase, trim the word (get rid of white space) we put in and submit it as an answer
+        
+        let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // make sure there's at least one character in the text box
+        
+        guard answer.count > 0 else { return }
+        
+        // extra validation to come
+        
+        withAnimation {
+            usedWords.insert(answer, at: 0)
+        }
+        
+        newWord = ""
     }
 }
 
