@@ -79,7 +79,26 @@ struct ContentView: View {
         
         guard answer.count > 0 else { return }
         
-        // extra validation to come
+        guard isOriginal(word: answer) else {
+            
+            wordError(title: "Word used already", message: "Please be more original!")
+            
+            return
+        }
+        
+        guard isPossible(word: answer) else {
+            
+            wordError(title: "This is not a possible word", message: "You can't spell that word from '\(rootWord)'!")
+            
+            return
+        }
+        
+        guard isReal(word: answer) else {
+            
+            wordError(title: "Word not recognized", message: "You can't just make them up, y'know!")
+            
+            return
+        }
         
         withAnimation {
             usedWords.insert(answer, at: 0)
