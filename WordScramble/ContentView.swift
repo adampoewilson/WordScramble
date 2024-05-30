@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     // set up variables
+    // ______________________________
     
     @State private var usedWords = [String]()
     
@@ -18,12 +19,20 @@ struct ContentView: View {
     @State private var newWord = ""
     
     // for error tracking
+    // _______________________________
     
     @State private var errorTitle = ""
     
     @State private var errorMessage = ""
-    
+        
     @State private var showingError = false
+    
+    // score variable (variables?)
+    // _________________________________
+    
+    @State private var score = 0
+    
+   
     
     
     
@@ -38,8 +47,10 @@ struct ContentView: View {
                     
                     TextField("Enter your word:", text: $newWord)
                         .textInputAutocapitalization(.never)
-                    
+                     
+    
                 }
+               
                 
               Section {
                     
@@ -57,6 +68,15 @@ struct ContentView: View {
                     
                 }
                 
+                Section {
+                    
+                    // show score
+                    
+                    Text("Score: \(score)")
+                    
+                    
+                }
+                
             }
             .navigationTitle(rootWord)
             .onSubmit(addNewWord)
@@ -65,9 +85,25 @@ struct ContentView: View {
                  
                 Text(errorMessage)
             }
+            .toolbar {
+                
+                Button(action: startGame ) {
+                    
+                   Image(systemName: "arcade.stick.console")
+                    
+                }
+                
+            }
         }
         
     }
+    
+    func updateScore() {
+        
+        score = score + 10
+        
+    }
+    
     
     func addNewWord() {
         
@@ -79,9 +115,37 @@ struct ContentView: View {
         
         guard answer.count > 0 else { return }
         
+        
+        // make sure word has at least 2 characters
+        
+        guard answer.count >= 2 else {
+            
+            wordError(title: "Word too short", message: "You can only use words that have more than 2 letters.")
+            
+                
+            newWord = ""
+            
+            return
+            
+        }
+        
+        
+        // User can't use root word as an answer
+        
+        guard answer != rootWord else {
+            
+            wordError(title: "Ummm..... look at the root word...", message: "Is the root word the same?  Yeeeaaaahhh.... can't use it!!")
+            
+            newWord = ""
+            
+            return
+        }
+        
         guard isOriginal(word: answer) else {
             
             wordError(title: "Word used already", message: "Please be more original!")
+            
+            newWord = ""
             
             return
         }
@@ -90,6 +154,8 @@ struct ContentView: View {
             
             wordError(title: "This is not a possible word", message: "You can't spell that word from '\(rootWord)'!")
             
+            newWord = ""
+            
             return
         }
         
@@ -97,14 +163,23 @@ struct ContentView: View {
             
             wordError(title: "Word not recognized", message: "You can't just make them up, y'know!")
             
+          
+            newWord = ""
+            
             return
         }
+        
+       
         
         withAnimation {
             usedWords.insert(answer, at: 0)
         }
         
         newWord = ""
+        
+        // update score only if word is valid
+        
+        updateScore()
     }
     
     func startGame() {
@@ -117,6 +192,8 @@ struct ContentView: View {
                 
                 rootWord = allWords.randomElement() ?? "orjentha"
                 
+                newWord = ""
+                
                 return
             }
             
@@ -126,12 +203,16 @@ struct ContentView: View {
         
     }
     
+   
+    
+    
     func isOriginal(word: String) -> Bool {
         
         // is the word we've used original
         
         !usedWords.contains(word)
     }
+    
     
     func isPossible (word: String) -> Bool {
         
