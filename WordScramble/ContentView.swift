@@ -87,10 +87,11 @@ struct ContentView: View {
             }
             .toolbar {
                 
-                Button(action: startGame ) {
+                Button(action: startGame) {
                     
                    Image(systemName: "arcade.stick.console")
                     
+                   
                 }
                 
             }
@@ -183,6 +184,8 @@ struct ContentView: View {
     }
     
     func startGame() {
+        
+        score = 0
         
         if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt") {
             
